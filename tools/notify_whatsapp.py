@@ -44,7 +44,22 @@ def compor_de_edicao(caminho: str) -> str:
     except ValueError:
         data_fmt = data
 
-    linhas = [f'📡 {ed.get("titulo", "Radar")} — {data_fmt}', ""]
+    linhas = [f'📡 {ed.get("titulo", "Radar")} — {data_fmt}']
+
+    # Linha de mercado (dólar, índices) logo abaixo do título.
+    merc = ed.get("mercado", [])
+    if merc:
+        partes = []
+        for i in merc:
+            pct = i.get("variacao_pct")
+            if pct is None:
+                partes.append(f'{i.get("nome","")} {i.get("valor","")}')
+            else:
+                seta = "▲" if pct > 0 else ("▼" if pct < 0 else "•")
+                partes.append(f'{i.get("nome","")} {i.get("valor","")} {seta}{abs(pct):.2f}%')
+        linhas.append("📊 " + " · ".join(partes))
+    linhas.append("")
+
     if ed.get("manchete", {}).get("titulo"):
         linhas += [f'🔦 {ed["manchete"]["titulo"]}', ""]
 

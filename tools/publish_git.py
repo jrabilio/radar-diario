@@ -2,17 +2,21 @@
 """
 publish_git.py — Publica o repositório (raiz) no GitHub Pages (Layer 3 / WAT).
 
-O projeto inteiro é o repositório `radar-diario`. A pasta docs/ é a raiz do site
-(GitHub Pages serve de /docs). Este script faz commit e push do que mudou.
-Segredos (.env) e arquivos temporários ficam de fora via .gitignore.
+Estratégia de push robusta (funciona tanto local quanto na nuvem):
+  1) tenta `git push origin main` como está — na nuvem o ambiente já tem
+     credencial de git configurada no clone (credential helper), então isso
+     funciona SEM depender do token do .env;
+  2) se falhar, injeta a URL com o GITHUB_TOKEN do .env (ignorando qualquer
+     credential helper) — caminho usado no ambiente local.
 
-Requer no .env:
-  GITHUB_REPO   = usuario/nome-do-repo
-  GITHUB_TOKEN  = token com permissão de escrita no repositório
+Isso evita o bug em que sobrescrever o origin com a URL do token faz o
+credential helper do ambiente de nuvem interferir ("Invalid username or token").
+
+Requer no .env (para o fallback): GITHUB_REPO, GITHUB_TOKEN.
 
 Uso:
-  python3 tools/publish_git.py --data 2026-07-21
-  python3 tools/publish_git.py --data 2026-07-21 --dry-run   # commit local, sem push
+  python3 tools/publish_git.py --data 2026-07-22
+  python3 tools/publish_git.py --data 2026-07-22 --dry-run   # commit local, sem push
 """
 
 import argparse
@@ -27,9 +31,10 @@ DOCS = os.path.join(ROOT, "docs")
 load_dotenv(os.path.join(ROOT, ".env"))
 
 
-def git(*args, check=True) -> subprocess.CompletedProcess:
+def git(*args, check=True, extra_env=None) -> subprocess.CompletedProcess:
+    env = {**os.environ, **(extra_env or {})}
     return subprocess.run(["git", "-C", ROOT, *args],
-                          capture_output=True, text=True, check=check)
+                          capture_output=True, text=True, check=check, env=env)
 
 
 def ensure_repo():
@@ -62,25 +67,30 @@ def main() -> int:
         print("--dry-run: push pulado.")
         return 0
 
+    # 1) push no origin como está (usa credencial do ambiente; não prompta).
+    r = git("push", "origin", "main", check=False,
+            extra_env={"GIT_TERMINAL_PROMPT": "0"})
+    if r.returncode == 0:
+        print(f"Publicado (origin). {os.environ.get('NEWSLETTER_PUBLIC_URL', '')}")
+        return 0
+    print("Push no origin falhou; tentando com o token do .env...", file=sys.stderr)
+
+    # 2) fallback: URL com token, ignorando credential helpers do ambiente.
     repo = os.environ.get("GITHUB_REPO", "").strip()
     token = os.environ.get("GITHUB_TOKEN", "").strip()
     if not repo or not token:
-        print("ERRO: defina GITHUB_REPO e GITHUB_TOKEN no .env.", file=sys.stderr)
+        print("ERRO: push no origin falhou e não há GITHUB_REPO/GITHUB_TOKEN no .env.",
+              file=sys.stderr)
         return 1
-
-    remote = f"https://x-access-token:{token}@github.com/{repo}.git"
-    if git("remote", "get-url", "origin", check=False).returncode == 0:
-        git("remote", "set-url", "origin", remote)
-    else:
-        git("remote", "add", "origin", remote)
-
-    push = git("push", "-u", "origin", "main", check=False)
-    if push.returncode != 0:
-        print(f"ERRO no push:\n{push.stderr.replace(token, '***')}", file=sys.stderr)
+    url = f"https://x-access-token:{token}@github.com/{repo}.git"
+    r2 = git("-c", "credential.helper=", "push", url, "main", check=False,
+             extra_env={"GIT_TERMINAL_PROMPT": "0"})
+    if r2.returncode != 0:
+        print(f"ERRO no push (token):\n{r2.stderr.replace(token, '***')}", file=sys.stderr)
         return 1
 
     public = os.environ.get("NEWSLETTER_PUBLIC_URL", f"https://github.com/{repo}")
-    print(f"Publicado! {public}")
+    print(f"Publicado (token). {public}")
     return 0
 
 

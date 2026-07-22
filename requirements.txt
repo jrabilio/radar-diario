@@ -4,3 +4,5 @@
 
 python-dotenv>=1.0.0     # Carrega variáveis do .env
 requests>=2.31.0         # Chamadas HTTP / APIs
+beautifulsoup4>=4.12.0   # Parsing HTML — usado por scrape_single_site.py
+lxml>=5.0.0              # Parser rápido para o BeautifulSoup

@@ -1,0 +1,23 @@
+# Secrets & credentials — NEVER commit
+.env
+credentials.json
+token.json
+
+# Config local do Claude Code (permissões da máquina)
+.claude/settings.local.json
+
+# Temporary / regenerable files
+.tmp/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,6 @@
+# Dependências Python das ferramentas (tools/).
+# Instale com: pip3 install -r requirements.txt
+# Adicione novas libs aqui conforme criar tools.
+
+python-dotenv>=1.0.0     # Carrega variáveis do .env
+requests>=2.31.0         # Chamadas HTTP / APIs

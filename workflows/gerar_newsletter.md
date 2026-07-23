@@ -77,6 +77,9 @@ Monte `.tmp/edition.json`:
 `tools/notify_whatsapp.py --edition .tmp/edition.json`
 Compõe automaticamente a mensagem-resumo (manchete + 1 destaque por seção + link direto
 para a edição, usando `NEWSLETTER_PUBLIC_URL`). Use `--dry-run` para conferir antes.
+O link vai **logo abaixo do título** (2ª linha), de propósito: o CallMeBot pode truncar
+mensagens longas e, se o link ficasse no fim, sumiria. Se a env faltar, o tool emite AVISO
+em stderr em vez de mandar em silêncio sem link.
 
 ## Saída esperada
 - **Formato:** página HTML seccionada no GitHub Pages + versão Markdown.

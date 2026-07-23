@@ -46,6 +46,17 @@ def compor_de_edicao(caminho: str) -> str:
 
     linhas = [f'📡 {ed.get("titulo", "Radar")} — {data_fmt}']
 
+    # Link logo abaixo do título: o CallMeBot pode truncar mensagens longas,
+    # então garantimos que o link fique no topo, onde nunca é cortado.
+    base = os.environ.get("NEWSLETTER_PUBLIC_URL", "").strip().rstrip("/")
+    if base and data:
+        linhas.append(f'🔗 {base}/editions/{data}.html')
+    elif base:
+        linhas.append(f'🔗 {base}')
+    else:
+        print("AVISO: NEWSLETTER_PUBLIC_URL não definida — mensagem sairá sem link.",
+              file=sys.stderr)
+
     # Linha de mercado (dólar, índices) logo abaixo do título.
     merc = ed.get("mercado", [])
     if merc:
@@ -69,13 +80,8 @@ def compor_de_edicao(caminho: str) -> str:
         if itens:
             destaques.append(f'• {sec["titulo"]}: {itens[0]["titulo"]}')
     if destaques:
-        linhas += ["Nesta edição:"] + destaques + [""]
+        linhas += ["Nesta edição:"] + destaques
 
-    base = os.environ.get("NEWSLETTER_PUBLIC_URL", "").strip().rstrip("/")
-    if base and data:
-        linhas.append(f'🔗 {base}/editions/{data}.html')
-    elif base:
-        linhas.append(f'🔗 {base}')
     return "\n".join(linhas).strip()
 
 

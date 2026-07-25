@@ -89,6 +89,36 @@
         "agronegócio Brasil notícia mercado hoje",
         "safra commodities preço agro Brasil esta semana"
       ]
+    },
+    {
+      "id": "carteira",
+      "titulo": "Carteira Ecotransforma",
+      "ativo": true,
+      "tarja": true,
+      "max_itens": 5,
+      "_dica": "Radar das empresas já atendidas pela Ecotransforma. Foco em ganchos de FUP.",
+      "foco_fup": "Priorizar ganchos de captação/patrocínio/Lei Rouanet/ESG: verba, resultado/lucro, editais de patrocínio, expansão, compromisso socioambiental. Ainda vale fato institucional forte, mas o gancho de captação vem primeiro.",
+      "empresas": [
+        {"nome": "Aegea Saneamento", "setor": "saneamento"},
+        {"nome": "Compagás", "setor": "gás/energia", "aliases": ["Companhia Paranaense de Gás"]},
+        {"nome": "Copergás", "setor": "gás/energia", "aliases": ["Companhia Pernambucana de Gás"]},
+        {"nome": "CTG Brasil", "setor": "energia"},
+        {"nome": "Enercan", "setor": "energia", "aliases": ["Campos Novos Energia"]},
+        {"nome": "Engie Brasil", "setor": "energia"},
+        {"nome": "GRU Aeroporto", "setor": "infraestrutura", "aliases": ["GRU Airport", "Aeroporto de Guarulhos"]},
+        {"nome": "Grupo Sada", "setor": "siderurgia/logística"},
+        {"nome": "Imetame", "setor": "energia/engenharia"},
+        {"nome": "Ingredion", "setor": "alimentos/ingredientes"},
+        {"nome": "Jaepel", "setor": "papel/embalagens"},
+        {"nome": "JMendes", "setor": "construção/mineração", "aliases": ["Grupo JMendes", "J.Mendes"]},
+        {"nome": "M. Dias Branco", "setor": "alimentos"},
+        {"nome": "Rabobank", "setor": "banco/agro"},
+        {"nome": "Samarco", "setor": "mineração"},
+        {"nome": "Sylvamo", "setor": "papel", "aliases": ["Sylvamo International Paper", "International Paper Brasil"]},
+        {"nome": "TAG", "setor": "gás/transporte", "aliases": ["Transportadora Associada de Gás"]},
+        {"nome": "Tetra Pak", "setor": "embalagens"}
+      ],
+      "queries": []
     }
   ],
 

@@ -103,6 +103,13 @@ header.nl .data { font-family:var(--sans); font-size:.72rem; text-transform:uppe
   font-family:var(--sans); font-weight:700; font-size:.82rem; text-transform:uppercase;
   letter-spacing:.1em; }
 
+.tarja { margin:2.5rem 0 1rem; padding:1.1rem 1.25rem 1.4rem; background:var(--panel);
+  border:1px solid var(--line); border-left:4px solid var(--accent); border-radius:2px; }
+.tarja .tarja-label { color:var(--accent); margin-bottom:.35rem; }
+.tarja h2.tarja-titulo { font-family:var(--sans); font-weight:700; font-size:.95rem;
+  text-transform:uppercase; letter-spacing:.08em; border:0; margin:.1rem 0 .4rem; }
+.tarja .item:first-of-type { border-top:1px solid var(--line); }
+
 .item { padding:1.4rem 0; border-top:1px solid var(--line); }
 .item .fonte { margin-bottom:.35rem; }
 .item h3 { font-family:var(--serif); font-weight:700; font-size:1.3rem; line-height:1.16;
@@ -233,6 +240,14 @@ def render_manchete_html(m: dict) -> str:
 def render_edition_html(ed: dict) -> str:
     blocos = []
     for sec in _secoes(ed):
+        if sec.get("tarja"):
+            itens = "".join(_item_html(it, "h3", "item") for it in sec["itens"])
+            blocos.append(
+                '<section class="tarja">'
+                '<div class="eyebrow tarja-label">Monitoramento</div>'
+                f'<h2 class="tarja-titulo">{esc(sec.get("titulo", ""))}</h2>'
+                f'{itens}</section>')
+            continue
         if sec.get("titulo"):
             blocos.append(f'<h2 class="secao">{esc(sec["titulo"])}</h2>')
         for it in sec["itens"]:
@@ -279,7 +294,9 @@ def render_edition_md(ed: dict) -> str:
     if ed.get("intro"):
         lines += [ed["intro"], ""]
     for sec in _secoes(ed):
-        if sec.get("titulo"):
+        if sec.get("tarja"):
+            lines += ["---", "", f'**📡 Monitoramento — {sec.get("titulo", "")}**', ""]
+        elif sec.get("titulo"):
             lines += [f'## {sec["titulo"]}', ""]
         for it in sec["itens"]:
             lines += _item_md(it, "###")

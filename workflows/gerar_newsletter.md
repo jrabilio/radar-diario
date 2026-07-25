@@ -33,6 +33,19 @@ Para cada seção **ativa**, rode suas `queries` via **WebSearch**:
 `gmail.roteamento` (Agro Espresso → `agro`; Café com seu Dinheiro → `mercado_ma`).
 Extraia manchete/trecho/link de cada edição recebida.
 
+**Seção `carteira` (Carteira Ecotransforma — tarja de monitoramento):** trate diferente das
+seções por `queries`. Ela tem a lista `empresas` (cada uma com `nome`, `setor` e às vezes
+`aliases`). Para **cada empresa**, monte buscas em tempo de execução usando `nome` + `aliases`,
+**sempre qualificando** por `setor`/"Brasil" para evitar homônimos (crítico p/ TAG, Grupo Sada,
+Enercan, Imetame, Jaepel, Sylvamo, Compagás, Copergás). Busque três frentes via **WebSearch**:
+(a) notícias/releases/resultados/expansões; (b) **licitações/editais** — incl. **editais de
+patrocínio/cultura** e Lei Rouanet; (c) sinais **ESG**/socioambientais.
+- **Curadoria FUP:** aplique `carteira.foco_fup` — priorize fatos que sinalizem verba/apetite
+  para patrocínio (resultado/lucro, edital de patrocínio, expansão, compromisso ESG/cultural).
+  Fato institucional forte ainda entra, mas o gancho de captação vem primeiro.
+- No `resumo`, quando fizer sentido, explicite o **gancho de FUP** a partir do fato real
+  (ex.: "resultado recorde no 2º tri — janela para pauta de patrocínio"). **Nunca invente.**
+
 > Fonte que falhar (rede/rate limit) → logar e seguir. Nunca travar a edição inteira.
 
 ### 3.5. Filtrar já publicados (anti-repetição — determinístico)
@@ -60,10 +73,17 @@ Monte `.tmp/edition.json`:
   "secoes": [
     {"titulo": "Mercado Financeiro & Aquisições", "itens": [
       {"titulo": "...", "resumo": "...", "url": "https://...", "fonte": "..."}
+    ]},
+    {"titulo": "Carteira Ecotransforma", "tarja": true, "itens": [
+      {"titulo": "...", "resumo": "...", "url": "https://...", "fonte": "..."}
     ]}
   ]
 }
 ```
+- A **`carteira`** entra como **última** seção e leva `"tarja": true` (vira o bloco destacado
+  no fim da edição). Com 18 empresas, respeite `max_itens` (5): escolha os **5 fatos mais
+  relevantes do dia entre todas** — não force uma linha por empresa. Sem nada relevante, **omita**
+  (seções sem `itens` já são descartadas no build).
 
 ### 5. Montar a edição
 `tools/build_edition.py --input .tmp/edition.json` → gera

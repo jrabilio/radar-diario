@@ -18,6 +18,8 @@ Uso:
 import argparse
 import json
 import os
+import re
+import subprocess
 import sys
 import warnings
 
@@ -30,6 +32,36 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(ROOT, ".env"))
 
 API = "https://api.callmebot.com/whatsapp.php"
+
+
+def _repo_de_remote() -> str:
+    """Extrai 'owner/repo' do git remote origin (https ou ssh). '' se falhar."""
+    try:
+        url = subprocess.run(
+            ["git", "-C", ROOT, "remote", "get-url", "origin"],
+            capture_output=True, text=True, timeout=10,
+        ).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    # https://github.com/owner/repo(.git)  |  git@github.com:owner/repo(.git)
+    m = re.search(r"github\.com[/:]([^/]+)/(.+?)(?:\.git)?/?$", url)
+    return f"{m.group(1)}/{m.group(2)}" if m else ""
+
+
+def public_base() -> str:
+    """URL pública do GitHub Pages, robusta a config ausente na nuvem.
+
+    Ordem: NEWSLETTER_PUBLIC_URL → GITHUB_REPO → git remote origin.
+    Assim o link sobrevive mesmo quando o ambiente da nuvem não tem o .env.
+    """
+    base = os.environ.get("NEWSLETTER_PUBLIC_URL", "").strip().rstrip("/")
+    if base:
+        return base
+    repo = os.environ.get("GITHUB_REPO", "").strip() or _repo_de_remote()
+    if repo and "/" in repo:
+        owner, name = repo.split("/", 1)
+        return f"https://{owner}.github.io/{name}"
+    return ""
 
 
 def compor_de_edicao(caminho: str) -> str:
@@ -48,14 +80,14 @@ def compor_de_edicao(caminho: str) -> str:
 
     # Link logo abaixo do título: o CallMeBot pode truncar mensagens longas,
     # então garantimos que o link fique no topo, onde nunca é cortado.
-    base = os.environ.get("NEWSLETTER_PUBLIC_URL", "").strip().rstrip("/")
+    base = public_base()
     if base and data:
         linhas.append(f'🔗 {base}/editions/{data}.html')
     elif base:
         linhas.append(f'🔗 {base}')
     else:
-        print("AVISO: NEWSLETTER_PUBLIC_URL não definida — mensagem sairá sem link.",
-              file=sys.stderr)
+        print("AVISO: sem URL pública (NEWSLETTER_PUBLIC_URL/GITHUB_REPO/remote) "
+              "— mensagem sairá sem link.", file=sys.stderr)
 
     # Linha de mercado (dólar, índices) logo abaixo do título.
     merc = ed.get("mercado", [])

@@ -67,8 +67,14 @@ def main() -> int:
         print("--dry-run: push pulado.")
         return 0
 
+    # 0) fetch antes de empurrar: sem isso, um HEAD detached com conhecimento
+    # desatualizado do origin (comum em containers reaproveitados) faz o passo
+    # 1 falhar por non-fast-forward mesmo quando o remoto está OK.
+    git("fetch", "origin", "main", check=False,
+        extra_env={"GIT_TERMINAL_PROMPT": "0"})
+
     # 1) push no origin como está (usa credencial do ambiente; não prompta).
-    r = git("push", "origin", "main", check=False,
+    r = git("push", "origin", "HEAD:main", check=False,
             extra_env={"GIT_TERMINAL_PROMPT": "0"})
     if r.returncode == 0:
         print(f"Publicado (origin). {os.environ.get('NEWSLETTER_PUBLIC_URL', '')}")
@@ -83,7 +89,7 @@ def main() -> int:
               file=sys.stderr)
         return 1
     url = f"https://x-access-token:{token}@github.com/{repo}.git"
-    r2 = git("-c", "credential.helper=", "push", url, "main", check=False,
+    r2 = git("-c", "credential.helper=", "push", url, "HEAD:main", check=False,
              extra_env={"GIT_TERMINAL_PROMPT": "0"})
     if r2.returncode != 0:
         print(f"ERRO no push (token):\n{r2.stderr.replace(token, '***')}", file=sys.stderr)

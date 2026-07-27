@@ -116,3 +116,15 @@ em stderr em vez de mandar em silêncio sem link.
 ## Aprendizados
 _(Atualize: queries que trazem notícia fresca de verdade, veículos mais confiáveis por
 seção, sites que exigem tratamento especial no scrape, etc.)_
+
+- **2026-07-27:** `publish_git.py` falhava com "non-fast-forward" quando o
+  container tinha HEAD detached e a branch `main` local desatualizada (push
+  empurrava a ref local `main`, não o HEAD da edição nova). Corrigido: o tool
+  agora faz `git fetch origin main` antes de empurrar e usa `HEAD:main`
+  explícito nos dois caminhos (origin direto e fallback com token).
+- **2026-07-27:** WebSearch às vezes gera resumos "hoje" com números/eventos
+  não verificáveis num artigo específico (ex.: cotação de commodity sem link
+  de origem, ou rumor de lançamento de modelo de IA vindo de blog/YouTube).
+  Regra prática: só usar um candidato se houver uma URL de artigo real e
+  datado batendo com o fato citado — descartar o resto, mesmo que pareça
+  plausível.

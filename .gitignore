@@ -2,6 +2,21 @@
 .env
 credentials.json
 token.json
+secrets.env
+**/secrets.env
+!**/secrets.env.example
+# plist do LaunchAgent carrega App Password do Gmail em EnvironmentVariables
+com.ntics.relatoriodiario.plist
+
+# App de controle financeiro pessoal — NÃO versionar neste repositório.
+# Este remote (jrabilio/radar-diario) é PÚBLICO porque serve o GitHub Pages da
+# newsletter. A spec do app traz dados financeiros reais (custo de vida, percentual de
+# renda aportada, valores de reembolso, nomes das PJs e a lista de cartões), e o seed
+# de contas lista as instituições. Nada disso pode ir para um repositório público.
+# O app continua funcionando normalmente: ver workflows/controle_financeiro.md.
+# Para versionar o app, dê `git init` dentro de financas/ — sem remote, ou com um
+# remote PRIVADO.
+financas/
 
 # Config local do Claude Code (permissões da máquina)
 .claude/settings.local.json

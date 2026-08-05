@@ -1,0 +1,5 @@
+# Clientes monitorados para varredura de editais abertos
+# A skill pesquisa-empresa-ntics busca editais ativos para cada empresa desta lista.
+# Adicione uma empresa por linha (nome comercial, como aparece em buscas web).
+
+Áster

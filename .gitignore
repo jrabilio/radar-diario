@@ -18,6 +18,18 @@ com.ntics.relatoriodiario.plist
 # remote PRIVADO.
 financas/
 
+# SecondBrain — NÃO versionar neste repositório, pelo mesmo motivo de financas/.
+# O remote (jrabilio/radar-diario) é PÚBLICO. brain/ contém o faturamento real da
+# NTICS por cliente e ano (73 empresas), a carteira comercial com AE e valores de
+# proposta, as fichas de cliente derivadas e as memórias internas de processo.
+# Publicar isso seria expor a operação comercial inteira.
+# Para versionar o brain, use um repositório PRIVADO separado — ver MAPA.md.
+brain/
+
+# _revisar/ foi resolvido em 05/08/2026 (ver MAPA.md). O que tinha valor foi para
+# brain/processos/, brain/conhecimento/estudos-empresas/ e tools/legado/; o resto foi
+# para a Lixeira. A pasta não existe mais.
+
 # Config local do Claude Code (permissões da máquina)
 .claude/settings.local.json
 

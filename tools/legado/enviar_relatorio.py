@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 """
-enviar_relatorio.py — NTICS Projetos
-Envia o Relatório Executivo Diário via Gmail SMTP (smtplib.SMTP_SSL).
-Mesmo padrão do enviar_pmo_diario.py.
-Chamado pelo LaunchAgent com.ntics.relatoriodiario.plist às 07:30.
+enviar_relatorio.py — Relatório Executivo Diário
+Envia o relatório via Gmail SMTP (smtplib.SMTP_SSL).
 
-Variáveis de ambiente (definidas no plist):
-    GMAIL_USER          — ex: abilio@ntics.com.br
-    GMAIL_APP_PASSWORD  — App Password do Google (sem espaços)
+LEGADO: a rotina que chamava este script (LaunchAgent com.ntics.relatoriodiario)
+não existe mais. O script foi guardado por ter valor e continua funcionando se
+chamado à mão — ver MAPA.md.
+
+Tudo vem do .env da raiz do SPACE (gitignored — este repositório é público):
+    GMAIL_USER               — conta que envia
+    GMAIL_APP_PASSWORD       — App Password do Google (16 chars, sem espaços)
+    RELATORIO_DESTINATARIO   — para quem vai (padrão: o próprio GMAIL_USER)
+
+A App Password precisa ser da MESMA conta do GMAIL_USER: trocar o remetente sem
+gerar uma nova App Password naquela conta faz o login SMTP falhar.
 
 Uso manual:
-    GMAIL_USER=abilio@ntics.com.br GMAIL_APP_PASSWORD=xxxx python3 /Users/abiliomartins/Projetos/ABILIO'S SPACE/automacoes/relatorio-diario/enviar_relatorio.py
+    python3 tools/legado/enviar_relatorio.py
 """
 
 import os
@@ -22,10 +28,14 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # ── Configuração ──────────────────────────────────────────────────────────────
-DESTINATARIO    = "abilio@ntics.com.br"
-DIARIO_DIR      = Path.home() / "Desktop" / "CLAUDE" / "Diario"
-LOG_DIR         = Path.home() / "Desktop" / "CLAUDE" / "automacoes" / "logs"
+SPACE = Path(__file__).resolve().parent.parent.parent
+load_dotenv(SPACE / ".env")
+
+DIARIO_DIR      = SPACE / ".tmp" / "relatorios-executivos"
+LOG_DIR         = SPACE / ".tmp" / "logs"
 LOG_FILE        = LOG_DIR / "enviar_relatorio.log"
 MAX_IDADE_HORAS = 36
 
@@ -95,38 +105,17 @@ def main():
     log("=" * 60)
     log("Iniciando envio do Relatório Executivo")
 
-    # Credenciais via variáveis de ambiente (definidas no plist)
-    gmail_user = os.environ.get("GMAIL_USER", "abilio@ntics.com.br")
+    # Tudo vem do .env da raiz. O fallback antigo lia a senha do plist do
+    # pmodiario — removido: aqueles plists não existem mais nesta máquina.
+    gmail_user = os.environ.get("GMAIL_USER", "")
     gmail_pass = os.environ.get("GMAIL_APP_PASSWORD", "")
+    destinatario = os.environ.get("RELATORIO_DESTINATARIO", "") or gmail_user
 
-    # Fallback: lê a senha do plist do pmodiario (fonte única de verdade)
-    # Assim, quando a App Password é atualizada no pmodiario, o relatorio
-    # automaticamente usa a mesma senha sem precisar atualizar dois plists.
-    if not gmail_pass:
-        pmodiario_plists = [
-            Path.home() / "Library" / "LaunchAgents" / "com.ntics.pmodiario.plist",
-            Path.home() / "automacoes" / "com.ntics.pmodiario.plist",
-            Path.home() / "Desktop" / "CLAUDE" / "automacoes" / "com.ntics.pmodiario.plist",
-        ]
-        for plist in pmodiario_plists:
-            if plist.exists():
-                try:
-                    import subprocess as _sp
-                    r = _sp.run(
-                        ["/usr/libexec/PlistBuddy", "-c",
-                         "Print :EnvironmentVariables:GMAIL_APP_PASSWORD", str(plist)],
-                        capture_output=True, text=True
-                    )
-                    if r.returncode == 0 and r.stdout.strip():
-                        gmail_pass = r.stdout.strip()
-                        log(f"Senha lida de: {plist.name}")
-                        break
-                except Exception:
-                    pass
-
-    if not gmail_pass:
-        log("ERRO: GMAIL_APP_PASSWORD não encontrada em variável de ambiente nem no plist do pmodiario.")
-        log("Execute com: GMAIL_USER=abilio@ntics.com.br GMAIL_APP_PASSWORD=xxxx python3 enviar_relatorio.py")
+    if not gmail_user or not gmail_pass:
+        log("ERRO: GMAIL_USER e/ou GMAIL_APP_PASSWORD ausentes.")
+        log(f"Defina as duas no .env da raiz: {SPACE / '.env'}")
+        log("A App Password precisa ser da mesma conta do GMAIL_USER —")
+        log("gere em https://myaccount.google.com/apppasswords logado nela.")
         sys.exit(1)
 
     relatorio = achar_relatorio_hoje()
@@ -140,15 +129,16 @@ def main():
     dia_semana_map = {0:"Segunda",1:"Terça",2:"Quarta",3:"Quinta",
                       4:"Sexta",5:"Sábado",6:"Domingo"}
     dia    = dia_semana_map[hoje.weekday()]
-    assunto = f"Relatório Executivo NTICS — {dia}, {hoje.strftime('%d/%m/%Y')}"
+    assunto = os.environ.get("RELATORIO_ASSUNTO_PREFIXO", "Relatório Executivo") + \
+              f" — {dia}, {hoje.strftime('%d/%m/%Y')}"
 
     html = relatorio.read_text(encoding="utf-8")
     log(f"HTML carregado: {len(html):,} bytes")
     log(f"Remetente: {gmail_user}")
-    log(f"Enviando para: {DESTINATARIO}")
+    log(f"Enviando para: {destinatario}")
     log(f"Assunto: {assunto}")
 
-    ok = enviar_via_gmail(gmail_user, gmail_pass, DESTINATARIO, assunto, html)
+    ok = enviar_via_gmail(gmail_user, gmail_pass, destinatario, assunto, html)
 
     if ok:
         log("✅ E-mail enviado com sucesso!")

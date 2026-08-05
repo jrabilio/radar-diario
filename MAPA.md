@@ -123,8 +123,9 @@ A terceira não estava no inventário original — apareceu numa varredura do qu
 
 ## Pendências
 
-1. **Rotacionar as três credenciais acima.**
-2. ⚠️ **O backup do brain no Drive não está rodando.** `tools/brain_sync_drive.py` espelha para a conta `BRAIN_DRIVE_CONTA` do `.env` (`@ecotransformax`), mas **essa conta não está montada nesta máquina** — a única em `~/Library/CloudStorage/` é `@ntics`. O script falha com erro claro, sem destruir nada. Resolver de um dos dois jeitos: adicionar a conta no app Google Drive, ou apontar `BRAIN_DRIVE_CONTA` para a `@ntics`. Enquanto isso, o brain existe **só** neste Mac.
-3. **Esvaziar a Lixeira** quando estiver confortável — as 3 pastas originais (32 MB) e o `_revisar/` estão lá, recuperáveis até então.
-4. `tools/legado/enviar_relatorio.py` ainda tem um fallback que lê a senha do plist do `pmodiario` em caminhos que não existem mais. Inofensivo (o `.env` resolve antes), mas é código morto se um dia a rotina voltar.
-5. `config/claude-global/CLAUDE-global.md` perdeu o e-mail pessoal da linha de identidade (repo público). O `~/.claude/CLAUDE.md` em uso **não** foi alterado — mas rodar `instalar.sh` sobrescreve com esta versão. Sem prejuízo prático: o Claude já recebe o e-mail pelo próprio ambiente.
+1. ⚠️ **Gerar uma App Password na conta `@ecotransformax` e pôr em `GMAIL_APP_PASSWORD`.** Está vazia de propósito: a operação passou de `@ntics` para `@ecotransformax` (remetente e destinatário do relatório, e a conta do espelho do brain), e App Password é **por conta** — a antiga, da `@ntics`, não autentica na nova. Enquanto estiver vazia o script para com mensagem clara, em vez de falhar com erro de autenticação. Requer Verificação em 2 Etapas ativa na conta.
+2. **Rotacionar as outras credenciais:** `ANTHROPIC_API_KEY` e as **duas** App Passwords antigas da `@ntics` (revogar ambas).
+3. ⚠️ **O backup do brain no Drive não está rodando.** `tools/brain_sync_drive.py` espelha para `BRAIN_DRIVE_CONTA` (`@ecotransformax`), mas **essa conta não está montada nesta máquina** — a única em `~/Library/CloudStorage/` é `@ntics`. O script falha com erro claro, sem destruir nada. Resolver adicionando a conta no app Google Drive. Enquanto isso, o brain existe **só** neste Mac.
+4. **Esvaziar a Lixeira** quando estiver confortável — as 3 pastas originais (32 MB) e o `_revisar/` estão lá, recuperáveis até então.
+5. ~~Fallback morto no `enviar_relatorio.py`~~ — **resolvido em 05/08**: o script foi parametrizado (remetente, destinatário e assunto vêm do `.env`), o fallback que lia plists inexistentes saiu, e as pastas de trabalho deixaram de apontar para `~/Desktop/CLAUDE/` (que foi para a Lixeira) e passaram a `.tmp/`.
+6. `config/claude-global/CLAUDE-global.md` perdeu o e-mail pessoal da linha de identidade (repo público). O `~/.claude/CLAUDE.md` em uso **não** foi alterado — mas rodar `instalar.sh` sobrescreve com esta versão. Sem prejuízo prático: o Claude já recebe o e-mail pelo próprio ambiente.

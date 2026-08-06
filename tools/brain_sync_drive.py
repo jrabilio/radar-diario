@@ -194,7 +194,15 @@ def main() -> int:
               file=sys.stderr)
         return 2
 
-    locais = sum(1 for p in BRAIN.rglob("*") if p.is_file())
+    # Conta só o que o rsync de fato leva: incluir os arquivos de EXCLUIR aqui
+    # fazia a conferência final acusar diferença a cada rodada — alarme falso que
+    # ensina a ignorar o aviso justamente quando ele for verdadeiro.
+    _ignorados = {".DS_Store", "_ESTADO.md"}
+    locais = sum(1 for p in BRAIN.rglob("*")
+                 if p.is_file()
+                 and p.name not in _ignorados
+                 and "__pycache__" not in p.parts
+                 and p.suffix != ".pyc")
     print(f"origem : {BRAIN}  ({locais} arquivos)")
     print(f"destino: {alvo}\n")
 

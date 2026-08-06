@@ -32,6 +32,41 @@ Consolidação iniciada em **04/08/2026**, **encerrada em 05/08/2026**. As pasta
 
 ---
 
+## Google Drive — sempre a conta `@ecotransformax`
+
+**Regra do Abilio (06/08/2026): nada é criado no Drive da `@ntics`.** O Drive de trabalho é
+o da `@ecotransformax`, montado em `~/Library/CloudStorage/`.
+
+⚠️ **O conector MCP do Google Drive está autenticado na `@ntics`**, e não segue a conta
+montada no app. Antes de gravar qualquer coisa pelo conector, **verifique**: busque a pasta
+`00. CLAUDE BRAIN`, que só existe na `@ecotransformax`. Não achou, não grave.
+
+Isso custou um incidente: em 06/08 a rotina do Relatório Executivo gravou na `@ntics` porque
+a skill *dizia* a conta certa mas nada checava. Dizer não é verificar.
+
+### Estrutura (organizada em 06/08/2026)
+
+A raiz tinha 17 arquivos soltos misturando pessoal e trabalho — certidão de casamento e
+comprovantes de DARF ao lado de contratos por PRONAC. Hoje a raiz tem só pastas:
+
+| Na raiz | O que é |
+|---|---|
+| `SERVIDOR/` | A estrutura real: `1. PESSOAL`, `2. ECOTRANSFORMA`, `3. NOVOS PROJETOS`, `4. TRANSFORMA CULTURAL`, `BACKUP HD`, `OUTROS` |
+| `00. CLAUDE BRAIN/` | Espelho do `brain/`, escrito por `tools/brain_sync_drive.py`. Não mexer à mão |
+| `Meet Recordings/` | Gravações do Google Meet |
+| `_TRIAGEM/` | 4 documentos Google sem destino óbvio, aguardando decisão |
+
+Onde as coisas foram parar: tributos de PJ em `2. ECOTRANSFORMA/ARQUIVO/FINANCEIRO/`,
+contratos por PRONAC e as 28 matrizes de entrega em `2. ECOTRANSFORMA/`, peças deferidas pelo
+MINC em `2. ECOTRANSFORMA/ARQUIVO/`, e o material de estudo (curso Disruptive Strategy, 58
+vídeos + 16 PDFs) em `1. PESSOAL/ESTUDOS/`.
+
+Único descarte: uma cópia da certidão de casamento, idêntica por MD5 à que já estava em
+`1. PESSOAL/DOCUMENTOS/`. Foi para a Lixeira do Drive, recuperável por 30 dias. Todo o resto
+foi movimentação — a contagem de arquivos bateu antes e depois.
+
+---
+
 ## Rotinas na nuvem
 
 Quatro rodando. Nenhuma depende deste Mac — é exatamente por isso que estão vivas.

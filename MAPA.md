@@ -14,7 +14,7 @@ Consolidação iniciada em **04/08/2026**, **encerrada em 05/08/2026**. As pasta
 | `config/claude-global/` | `CLAUDE-global.md`, `settings.json` e `instalar.sh` do sistema de memória |
 | `skills/brain-capturar/` | Captura diária de memória + os dois hooks. Substitui a `dream` |
 | `skills/brain-curar/` | Curadoria semanal — contradições, obsolescência, integridade |
-| `skills/agendadas-nuvem/` | 2 skills que **rodam hoje** como Cloud Routines |
+| `skills/agendadas-nuvem/` | 3 skills que **rodam hoje** como Cloud Routines — ver abaixo |
 | `skills/bundles/` | 2 skills empacotadas: `pesquisa-empresa-ntics`, `curadoria-pipeline-ntics` |
 | `tools/` `workflows/` `docs/` | Framework WAT. SOP da memória: [workflows/retroalimentar_brain.md](workflows/retroalimentar_brain.md) |
 | `tools/legado/` | Scripts de rotina que **não roda mais**, guardados por terem valor: gerador do HTML do relatório executivo e o envio por SMTP |
@@ -29,6 +29,42 @@ Consolidação iniciada em **04/08/2026**, **encerrada em 05/08/2026**. As pasta
 - **`processos/`** *(novo em 05/08)* — arquivo de receitas das rotinas que morreram: 18 `skills-agendadas/` + `atas-reuniao/`. Consultar antes de recriar qualquer automação.
 - **`conhecimento/estudos-empresas/`** *(novo)* — 30 estudos de prospect. **`referencias/dashboards/`** *(novo)* — 3 painéis preservados.
 - `conversas/`, `decisoes/`, `ideias/`, `projetos-anteriores/` vieram vazias da origem — mantidas com `.gitkeep` porque o INDEX documenta a estrutura.
+
+---
+
+## Rotinas na nuvem
+
+Quatro rodando. Nenhuma depende deste Mac — é exatamente por isso que estão vivas.
+
+| Rotina | Quando (BRT) | Cron (UTC) | Entrega |
+|---|---|---|---|
+| Radar Diário | 07h00 | `0 10 * * *` | GitHub Pages (público) + WhatsApp |
+| **Relatório Executivo** | **06h45** | `45 9 * * *` | **Google Drive (privado) + WhatsApp** |
+| Auditoria fase/status | 02h30 | `30 5 * * *` | Artefato |
+| Varredura completa | segundas 07h | `0 10 * * 1` | Artefato |
+
+O **Relatório Executivo** foi ressuscitado em 05/08/2026 ([trig_016gPDoRZ4sghXNKfSSA7QXV](https://claude.ai/code/routines/trig_016gPDoRZ4sghXNKfSSA7QXV)).
+Ele havia morrido em 17/07 porque tinha duas metades em máquinas diferentes: o Cowork gerava
+o HTML e um **LaunchAgent no Mac** enviava por SMTP às 07:30. A skill legada até avisava
+`NÃO enviar e-mail aqui`. Morta a camada local, nada mais saía.
+
+A versão nova roda inteira na nuvem e **não usa e-mail**. Não é preferência: a conta
+`@ecotransformax` é Google Workspace, e o Google
+[bloqueia App Password em conta de organização](https://support.google.com/accounts/answer/185833?hl=pt-BR)
+desde a virada para OAuth em março de 2025. O conector Gmail também não resolveria — só tem
+`create_draft`, sem método de envio.
+
+> ⚠️ A rotina é proibida de commitar. O relatório traz clipping interno do Grupo NEST e o
+> remote é público. A entrega é no Drive, e só lá.
+
+### Credenciais nas rotinas
+
+As rotinas na nuvem **não enxergam** o `.env` local — a documentação é explícita quanto a
+isso. Quando precisam de segredo, ele vai no prompt da rotina (privado na conta do Abilio).
+É o que a `Radar Diário` já fazia, e o que o Relatório Executivo faz com a chave do CallMeBot.
+
+> ⚠️ A `Radar Diário` carrega um `GITHUB_TOKEN` (`github_pat_…`) com permissão de escrita, em
+> texto puro no prompt. Entra na lista de rotação.
 
 ---
 
@@ -124,7 +160,7 @@ A terceira não estava no inventário original — apareceu numa varredura do qu
 ## Pendências
 
 1. ⚠️ **Gerar uma App Password na conta `@ecotransformax` e pôr em `GMAIL_APP_PASSWORD`.** Está vazia de propósito: a operação passou de `@ntics` para `@ecotransformax` (remetente e destinatário do relatório, e a conta do espelho do brain), e App Password é **por conta** — a antiga, da `@ntics`, não autentica na nova. Enquanto estiver vazia o script para com mensagem clara, em vez de falhar com erro de autenticação. Requer Verificação em 2 Etapas ativa na conta.
-2. **Rotacionar as outras credenciais:** `ANTHROPIC_API_KEY` e as **duas** App Passwords antigas da `@ntics` (revogar ambas).
+2. **Rotacionar as outras credenciais:** `ANTHROPIC_API_KEY`, as **duas** App Passwords antigas da `@ntics` (revogar ambas) e o `GITHUB_TOKEN` que está em texto puro no prompt da rotina `Radar Diário`.
 3. ⚠️ **O backup do brain no Drive não está rodando.** `tools/brain_sync_drive.py` espelha para `BRAIN_DRIVE_CONTA` (`@ecotransformax`), mas **essa conta não está montada nesta máquina** — a única em `~/Library/CloudStorage/` é `@ntics`. O script falha com erro claro, sem destruir nada. Resolver adicionando a conta no app Google Drive. Enquanto isso, o brain existe **só** neste Mac.
 4. **Esvaziar a Lixeira** quando estiver confortável — as 3 pastas originais (32 MB) e o `_revisar/` estão lá, recuperáveis até então.
 5. ~~Fallback morto no `enviar_relatorio.py`~~ — **resolvido em 05/08**: o script foi parametrizado (remetente, destinatário e assunto vêm do `.env`), o fallback que lia plists inexistentes saiu, e as pastas de trabalho deixaram de apontar para `~/Desktop/CLAUDE/` (que foi para a Lixeira) e passaram a `.tmp/`.

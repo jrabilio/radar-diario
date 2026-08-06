@@ -141,10 +141,31 @@ Confira que o arquivo existe e tem tamanho plausível (dezenas de KB) antes de s
 
 ## Passo 5 — Depositar no Google Drive
 
-Use o conector do Google Drive. Pasta de destino: **`Relatorios-Executivos`** na raiz do
-Drive da conta `abilio@ecotransformax.com.br`. Se não existir, crie.
+### 5a. CONFIRA A CONTA ANTES DE GRAVAR — obrigatório
+
+O relatório só pode ir para o Drive da conta **`abilio@ecotransformax.com.br`**. Nunca para a
+`@ntics`.
+
+Isso não é detalhe: em 06/08/2026 esta rotina gravou na conta errada. A skill *dizia* o nome
+da conta, mas nada verificava, e o conector estava autenticado na `@ntics`. Dizer não basta —
+**cheque**.
+
+Busque no Drive uma pasta chamada `00. CLAUDE BRAIN`. Ela existe **só** na
+`@ecotransformax` (é o destino do espelho do brain).
+
+- **Achou** → você está na conta certa. Siga.
+- **Não achou** → **ABORTE**. Não grave nada, não crie pasta, não tente outro lugar. Relate:
+  *"Conta errada no conector do Drive: `00. CLAUDE BRAIN` não encontrada. Esperado
+  @ecotransformax. Nada foi gravado."*
+
+### 5b. Gravar
+
+Pasta de destino: **`Relatorios-Executivos`** na raiz do Drive. Se não existir, crie.
 
 Nome do arquivo: `Relatorio_Executivo_DD-MM-AAAA.html`.
+
+Antes de subir, confira que o HTML local tem tamanho plausível (dezenas de KB). Se estiver
+com poucos bytes, algo falhou na geração — **não suba arquivo vazio**, refaça o Passo 4.
 
 Guarde o **link de visualização** do arquivo criado — ele vai na mensagem do WhatsApp.
 

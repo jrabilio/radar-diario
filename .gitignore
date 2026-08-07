@@ -18,6 +18,11 @@ com.ntics.relatoriodiario.plist
 # remote PRIVADO.
 financas/
 
+# Inteligência SALIC/Rouanet — NÃO versionar aqui. Traz a base SALIC 2022-2026, a
+# sobreposição da carteira NTICS sobre o mercado e a análise de grupo econômico dos
+# concorrentes. Tem git próprio, com remote PRIVADO em jrabilio/inteligencia-salic-rouanet.
+analise-salic/
+
 # Demo ESG para a M. Dias Branco — NÃO versionar aqui, pelo mesmo motivo de financas/.
 # Contém a proposta comercial SB × MDB, os briefs e o roteiro da apresentação. Tem git
 # próprio, com remote em jrabilio/DEMO-MDIAS-SB.

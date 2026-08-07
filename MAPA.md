@@ -48,6 +48,37 @@ mandadas para a Lixeira. 108 arquivos conferidos por MD5 antes de remover — to
 pelo Chrome, e a pasta `Cultural/`, que estava vazia. O HTML do PMO de 17/06 tinha 6,2 MB de
 conteúdo real e **foi preservado** — a inspeção mostrou que não era tralha como o resto da pasta.
 
+### `analise-salic/` — inteligência SALIC/Rouanet (absorvida em 07/08)
+
+Veio de `Desktop/ANALISE SALIC`. É o clone de `jrabilio/inteligencia-salic-rouanet`, um repo
+**privado**. Contém a base SALIC 2022-2026 (3 CSVs), a reanálise em fases (mapa neutro,
+sobreposição da carteira NTICS, reconciliação), análise de grupo econômico e um dashboard.
+
+Copiado com `.venv` de fora (76 MB regeneráveis) e `.git` preservado. 3.709 arquivos
+conferidos por MD5; a única divergência foi `.git/index`, que é cache reescrito pelo próprio
+git. `git fsck` sem erros e mesmo `HEAD` da origem.
+
+⚠️ **Há trabalho que existe só neste Mac:** `reanalise/dados_intermediarios/reconciliado/`
+(6,9 MB), `reanalise/grupo_economico/` (496 KB) e os scripts `reconciliacao.py` e
+`grupo_economico.py` nunca foram commitados. O push falha com 403 — o `GITHUB_TOKEN` do
+`.env` só alcança o `radar-diario`. Enquanto não houver token com escopo, esse material não
+tem cópia remota.
+
+### ⚠️ Auditoria dos repositórios públicos (07/08/2026)
+
+Depois do incidente da proposta da M. Dias Branco, auditei os repos públicos restantes.
+**Nenhuma credencial exposta.** Mas todos os quatro têm material interno:
+
+| Repo | O que expõe | Gravidade |
+|---|---|---|
+| `central-fornecedores-ntics` | **23 e-mails e 12 telefones** de fornecedores e da equipe | Dado pessoal de **terceiros** — o titular não é o Abilio |
+| `plano-de-vendas-ntics` | Metas comerciais 2026 (R$ 250 mil a 1 milhão) | Estratégia legível por concorrente |
+| `pmo` | Planejamento 2026 + **fotos de 13 pessoas** identificadas | Dado pessoal de terceiros |
+| `ntics-norteador` | 6 norteadores semanais, público há 72 dias | Gestão interna |
+
+O `ntics-norteador` serve um site em `jrabilio.github.io/ntics-norteador/` (HTTP 200 na
+verificação). **Privar o repo derruba esse site** — Pages em repo privado exige plano pago.
+
 ### ⚠️ Achado grave: proposta de cliente exposta publicamente
 
 O repositório **`jrabilio/DEMO-MDIAS-SB` é público** — confirmado pela API do GitHub sem

@@ -32,6 +32,39 @@ Consolidação iniciada em **04/08/2026**, **encerrada em 05/08/2026**. As pasta
 
 ---
 
+## Segunda leva do Desktop — 07/08/2026
+
+Quatro pastas (`MD`, `Skill NTICS`, `RELATÓRIOS CLAUDE`, `DEMO-MDIAS-SB`) foram absorvidas e
+mandadas para a Lixeira. 108 arquivos conferidos por MD5 antes de remover — todos idênticos.
+
+| De | Para |
+|---|---|
+| `Skill NTICS/` (5 `.zip`) | `skills/bundles/` — criar-landing, criar-landing-v2, criar-landing-preprojeto, criar-site, editar-site-web |
+| `MD/` (1 arquivo) | `brain/guias/GUIA_NOVO_LANCAMENTO_ORCAMENTO.md` — SOP do time para lançar orçamento de PRONAC |
+| `RELATÓRIOS CLAUDE/` | `brain/referencias/artefatos/` — 3 artefatos únicos (portfólio Ecotransforma, RACI, plano de vendas), o PMO de 17/06 e 5 norteadores |
+| `DEMO-MDIAS-SB/` | `demo-mdias-sb/` na raiz, **gitignored** |
+
+**Descartado:** 96 recursos de navegador (css, ícones, frames do Gmail) de uma página salva
+pelo Chrome, e a pasta `Cultural/`, que estava vazia. O HTML do PMO de 17/06 tinha 6,2 MB de
+conteúdo real e **foi preservado** — a inspeção mostrou que não era tralha como o resto da pasta.
+
+### ⚠️ Achado grave: proposta de cliente exposta publicamente
+
+O repositório **`jrabilio/DEMO-MDIAS-SB` é público** — confirmado pela API do GitHub sem
+autenticação — e versiona desde **09/07/2026**:
+
+- `Cópia de Proposta SB MDB 2026 _ 09_07_2026.docx` — proposta comercial SB × M. Dias Branco
+- `ESG_MDB_slides_ajustes_v5.pptx`, os dois briefs, o roteiro da apresentação e o handoff
+
+> **Ação do Abilio:** tornar privado em github.com/jrabilio/DEMO-MDIAS-SB/settings → Danger
+> Zone → Change visibility. Isso **estanca, mas não desfaz**: o que foi clonado ou indexado
+> já saiu. Avaliar se cabe avisar a SB e a M. Dias Branco.
+
+A cópia dentro do SPACE está protegida (`demo-mdias-sb/` no `.gitignore`), mas isso não
+resolve o repositório de origem — são dois lugares diferentes.
+
+---
+
 ## Google Drive — sempre a conta `@ecotransformax`
 
 **Regra do Abilio (06/08/2026): nada é criado no Drive da `@ntics`.** O Drive de trabalho é

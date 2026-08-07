@@ -18,6 +18,11 @@ com.ntics.relatoriodiario.plist
 # remote PRIVADO.
 financas/
 
+# Demo ESG para a M. Dias Branco — NÃO versionar aqui, pelo mesmo motivo de financas/.
+# Contém a proposta comercial SB × MDB, os briefs e o roteiro da apresentação. Tem git
+# próprio, com remote em jrabilio/DEMO-MDIAS-SB.
+demo-mdias-sb/
+
 # SecondBrain — NÃO versionar neste repositório, pelo mesmo motivo de financas/.
 # O remote (jrabilio/radar-diario) é PÚBLICO. brain/ contém o faturamento real da
 # NTICS por cliente e ano (73 empresas), a carteira comercial com AE e valores de
